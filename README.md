@@ -30,12 +30,12 @@ import github.com/royromny/meituan-peisong
 
 ## 两个回调接口：
 ```
-http.HandleFunc("/meituan_peisong", func(rep http.ResponseWriter, req *http.Request) {
+http.HandleFunc("/meituan", func(rep http.ResponseWriter, req *http.Request) {
 	var notify, _ = client.GetOrderNotification(req)
 	if notify != nil {
 		fmt.Println("订单状态为:", notify.OrderStatus)
 	}
-	meituan_peisong.AckNotification(rep) // 确认收到通知消息
+	meituan.AckNotification(rep) // 确认收到通知消息
 })
 ```
 
