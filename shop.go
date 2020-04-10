@@ -7,7 +7,7 @@ func (this *Client) ShopCreate(param ShopCreate) (result *ShopCreateRsp, err err
 }
 
 // shop/query 查询门店信息 https://peisong.meituan.com/open/doc#section2-14
-func (this *Client) ShopQuery(param ShopCreate) (result *ShopCreateRsp, err error) {
+func (this *Client) ShopQuery(param ShopQuery) (result *ShopQueryRsp, err error) {
 	err = this.doRequest("POST", &param, &result)
 	return result, err
 }
