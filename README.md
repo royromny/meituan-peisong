@@ -31,11 +31,11 @@ import github.com/royromny/meituan-peisong
 ## 两个回调接口：
 ```
 http.HandleFunc("/meituan", func(rep http.ResponseWriter, req *http.Request) {
-	var notify, _ = client.GetOrderNotification(req)
+	var notify, _ = client.GetOrderStatusNotify(req)
 	if notify != nil {
 		fmt.Println("订单状态为:", notify.OrderStatus)
 	}
-	meituan.AckNotification(rep) // 确认收到通知消息
+	meituan.AckNotify(rep) // 确认收到通知消息
 })
 ```
 
