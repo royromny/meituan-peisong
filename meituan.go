@@ -1,19 +1,19 @@
 package meituan
 
 import (
-	"bytes"
 	"sort"
 	"strconv"
 	"time"
 
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
-	"fmt"
+	"net/url"
+	"strings"
 )
 
 type Client struct {
-	isProduction bool
 	apiDomain    string
 	Client       *http.Client
 	location     *time.Location
@@ -24,29 +24,17 @@ type Client struct {
 // New 初始化客户端
 // appKey
 // appSecret
-// isProduction - 是否为生产环境，传 false 的时候为沙箱环境，用于开发测试，正式上线的时候需要改为 true
 // 测试环境与正式环境使用测试账号及线上账号区分
-func New(appKey, appSecret string, isProduction bool) (client *Client, err error) {
+func New(appKey, appSecret string) (client *Client, err error) {
 	location, _ := time.LoadLocation("Local")
 	client = &Client{}
-	client.isProduction = isProduction
-
-	if client.isProduction {
-		client.appKey = appKey
-		client.appSecret = appSecret
-	} else {
-		client.appKey = "appKeyText"
-		client.appSecret = "appSecretText"
-	}
+	client.appKey = appKey
+	client.appSecret = appSecret
 	client.apiDomain = kProductionURL
 	client.Client = http.DefaultClient
 	client.location = location
 
 	return client, nil
-}
-
-func (this *Client) IsProduction() bool {
-	return this.isProduction
 }
 
 // 补充处理基本请求参数
@@ -55,27 +43,36 @@ func (this *Client) URLValues(param Param) (map[string]string, error) {
 	value["appkey"] = this.appKey
 	value["timestamp"] = strconv.Itoa(int(time.Now().In(this.location).Unix()))
 	value["version"] = kVersion
-
 	bytes, err := json.Marshal(param)
 	if err != nil {
 		return nil, err
 	}
-	value["body"] = string(bytes)
+	var mapPs map[string]string
+	if json.Unmarshal(bytes, &mapPs) == nil {
+		for k, v := range mapPs {
+			value[k] = v
+		}
+	}
+
 	value["sign"] = sign(value, this.appSecret)
 	return value, nil
 }
 
 func (this *Client) doRequest(method string, param Param, result interface{}) (err error) {
-	var buf *bytes.Buffer
+	DataUrlVal := url.Values{}
 	if param != nil {
 		p, err := this.URLValues(param)
 		if err != nil {
 			return err
 		}
-		strP, err := json.Marshal(p)
-		buf = bytes.NewBuffer(strP)
+		for k, v := range p {
+			println(k)
+			println(v)
+			DataUrlVal.Add(k, v)
+		}
 	}
-	req, err := http.NewRequest(method, this.apiDomain+param.APIName(), buf)
+	println(DataUrlVal.Encode())
+	req, err := http.NewRequest(method, this.apiDomain+param.APIName(), strings.NewReader(DataUrlVal.Encode()))
 	if err != nil {
 		return err
 	}

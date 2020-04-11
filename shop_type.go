@@ -36,11 +36,6 @@ func (t *ShopCreate) APIName() string {
 	return "shop/create"
 }
 
-func (t *ShopCreate) Params() map[string]string {
-	var m = make(map[string]string)
-	return m
-}
-
 // --------------------------------------------------------------------------------
 // ShopQuery 查询门店信息 https://peisong.meituan.com/open/doc#section2-14
 type ShopQuery struct {
@@ -63,11 +58,6 @@ func (t *ShopQuery) APIName() string {
 	return "shop/query"
 }
 
-func (t *ShopQuery) Params() map[string]string {
-	var m = make(map[string]string)
-	return m
-}
-
 // --------------------------------------------------------------------------------
 // shop/area/query 查询合作方配送范围 https://peisong.meituan.com/open/doc#section2-10
 type ShopAreaQuery struct {
@@ -84,9 +74,4 @@ type ShopAreaQueryRsp struct {
 
 func (t *ShopAreaQuery) APIName() string {
 	return "shop/area/query"
-}
-
-func (t *ShopAreaQuery) Params() map[string]string {
-	var m = make(map[string]string)
-	return m
 }

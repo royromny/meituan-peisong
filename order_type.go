@@ -44,11 +44,6 @@ func (t *OrderCreateByShop) APIName() string {
 	return "order/createByShop"
 }
 
-func (t *OrderCreateByShop) Params() map[string]string {
-	var m = make(map[string]string)
-	return m
-}
-
 // --------------------------------------------------------------------------------
 // order/delete 取消订单 https://peisong.meituan.com/open/doc#section2-3
 type OrderDelete struct {
@@ -69,11 +64,6 @@ type OrderDeleteRsp struct {
 
 func (t *OrderDelete) APIName() string {
 	return "order/delete"
-}
-
-func (t *OrderDelete) Params() map[string]string {
-	var m = make(map[string]string)
-	return m
 }
 
 // --------------------------------------------------------------------------------
@@ -103,11 +93,6 @@ func (t *OrderStatusQuery) APIName() string {
 	return "order/status/query"
 }
 
-func (t *OrderStatusQuery) Params() map[string]string {
-	var m = make(map[string]string)
-	return m
-}
-
 // --------------------------------------------------------------------------------
 // order/evaluate 评价骑手 https://peisong.meituan.com/open/doc#section2-7
 // 为了将合作方端的顾客对骑手的评价及时反馈给美团，提高美团侧的配送质量，海葵开放平台提供了对骑手的评价接口。合作方可以将顾客对骑手的评价信息通过此接口反馈给美团，同时需要注意以下几点：
@@ -134,11 +119,6 @@ func (t *OrderEvaluate) APIName() string {
 	return "order/evaluate"
 }
 
-func (t *OrderEvaluate) Params() map[string]string {
-	var m = make(map[string]string)
-	return m
-}
-
 // --------------------------------------------------------------------------------
 // order/check 配送能力校验 https://peisong.meituan.com/open/doc#section2-8
 // 根据合作方提供的模拟发单参数，确定美团是否可配送。主要校验项：门店是否存在、门店配送范围、门店营业时间、门店支持的服务包。
@@ -162,11 +142,6 @@ func (t *OrderCheck) APIName() string {
 	return "order/check"
 }
 
-func (t *OrderCheck) Params() map[string]string {
-	var m = make(map[string]string)
-	return m
-}
-
 // --------------------------------------------------------------------------------
 // order/rider/location 获取骑手当前位置 https://peisong.meituan.com/open/doc#section2-9
 type OrderRiderLocation struct {
@@ -185,9 +160,4 @@ type OrderRiderLocationRsp struct {
 
 func (t *OrderRiderLocation) APIName() string {
 	return "order/check"
-}
-
-func (t *OrderRiderLocation) Params() map[string]string {
-	var m = make(map[string]string)
-	return m
 }
