@@ -1,24 +1,23 @@
 package meituan
 
 import (
-	"sort"
-	"strconv"
-	"time"
-
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"sort"
+	"strconv"
 	"strings"
+	"time"
 )
 
 type Client struct {
-	apiDomain    string
-	Client       *http.Client
-	location     *time.Location
-	appKey       string
-	appSecret    string
+	apiDomain string
+	Client    *http.Client
+	location  *time.Location
+	appKey    string
+	appSecret string
 }
 
 // New 初始化客户端
@@ -43,17 +42,12 @@ func (this *Client) URLValues(param Param) (map[string]string, error) {
 	value["appkey"] = this.appKey
 	value["timestamp"] = strconv.Itoa(int(time.Now().In(this.location).Unix()))
 	value["version"] = kVersion
-	bytes, err := json.Marshal(param)
-	if err != nil {
-		return nil, err
-	}
-	var mapPs map[string]string
-	if json.Unmarshal(bytes, &mapPs) == nil {
-		for k, v := range mapPs {
+	p := StructToMapString(param)
+	if p != nil {
+		for k, v := range p {
 			value[k] = v
 		}
 	}
-
 	value["sign"] = sign(value, this.appSecret)
 	return value, nil
 }
@@ -66,12 +60,9 @@ func (this *Client) doRequest(method string, param Param, result interface{}) (e
 			return err
 		}
 		for k, v := range p {
-			println(k)
-			println(v)
 			DataUrlVal.Add(k, v)
 		}
 	}
-	println(DataUrlVal.Encode())
 	req, err := http.NewRequest(method, this.apiDomain+param.APIName(), strings.NewReader(DataUrlVal.Encode()))
 	if err != nil {
 		return err
@@ -90,7 +81,7 @@ func (this *Client) doRequest(method string, param Param, result interface{}) (e
 		return err
 	}
 
-	fmt.Println("*********dataStr********")
+	fmt.Println("********dataStr********")
 	fmt.Println(string(data))
 
 	err = json.Unmarshal(data, result)
@@ -115,7 +106,9 @@ func sign(p map[string]string, appSecret string) string {
 	sort.Strings(keys)
 	var strParam string
 	for _, k := range keys {
-		strParam += k + p[k]
+		if k != "sign" {
+			strParam += k + p[k]
+		}
 	}
 	// 首加上app_secret秘钥
 	strParam = appSecret + strParam

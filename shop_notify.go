@@ -1,11 +1,9 @@
 package meituan
 
 import (
-	"encoding/json"
 	"errors"
-	"fmt"
-	"io/ioutil"
 	"net/http"
+	"strconv"
 )
 
 // 门店状态回调 https://peisong.meituan.com/open/doc#section2-15
@@ -17,14 +15,19 @@ func (this *Client) GetShopStatusNotify(req *http.Request) (notity *ShopStatusNo
 		return nil, err
 	}
 
+	form := req.PostForm
 	notity = &ShopStatusNotify{}
-	body, err := ioutil.ReadAll(req.Body)
-	if err = json.Unmarshal(body, notity); err != nil {
-		fmt.Printf("Unmarshal err, %v\n", err)
-		return nil, err
+	notity.Status, _ = strconv.Atoi(form.Get("status"))
+	notity.ShopId = form.Get("shop_id")
+	notity.ShopName = form.Get("shop_name")
+	notity.Sign = form.Get("sign")
+	notity.Timestamp, _ = strconv.Atoi(form.Get("timestamp"))
+	notity.Appkey = form.Get("appkey")
+	notity.RejectMessage = form.Get("reject_message")
+	value := StructToMapString(notity)
+	if notity.Sign != sign(value, this.appSecret) {
+		return nil, errors.New("签名不正确")
 	}
-
-	// TODO 检查签名
 
 	return notity, err
 }
@@ -38,14 +41,18 @@ func (this *Client) GetShopAreaNotify(req *http.Request) (notity *ShopAreaNotify
 		return nil, err
 	}
 
+	form := req.PostForm
 	notity = &ShopAreaNotify{}
-	body, err := ioutil.ReadAll(req.Body)
-	if err = json.Unmarshal(body, notity); err != nil {
-		fmt.Printf("Unmarshal err, %v\n", err)
-		return nil, err
+	notity.DeliveryServiceCode, _ = strconv.Atoi(form.Get("delivery_service_code"))
+	notity.ShopId = form.Get("shop_id")
+	notity.Scope = form.Get("scope")
+	notity.Sign = form.Get("sign")
+	notity.Timestamp, _ = strconv.Atoi(form.Get("timestamp"))
+	notity.Appkey = form.Get("appkey")
+	value := StructToMapString(notity)
+	if notity.Sign != sign(value, this.appSecret) {
+		return nil, errors.New("签名不正确")
 	}
-
-	// TODO 检查签名
 
 	return notity, err
 }
@@ -60,14 +67,17 @@ func (this *Client) GetShopDeliveryRiskNotify(req *http.Request) (notity *ShopDe
 		return nil, err
 	}
 
+	form := req.PostForm
 	notity = &ShopDeliveryRiskNotify{}
-	body, err := ioutil.ReadAll(req.Body)
-	if err = json.Unmarshal(body, notity); err != nil {
-		fmt.Printf("Unmarshal err, %v\n", err)
-		return nil, err
+	notity.DeliveryRiskLevel, _ = strconv.Atoi(form.Get("delivery_risk_level"))
+	notity.ShopId = form.Get("shop_id")
+	notity.Sign = form.Get("sign")
+	notity.Timestamp, _ = strconv.Atoi(form.Get("timestamp"))
+	notity.Appkey = form.Get("appkey")
+	value := StructToMapString(notity)
+	if notity.Sign != sign(value, this.appSecret) {
+		return nil, errors.New("签名不正确")
 	}
-
-	// TODO 检查签名
 
 	return notity, err
 }
