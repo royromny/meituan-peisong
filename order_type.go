@@ -35,7 +35,7 @@ type OrderCreateByShopRsp struct {
 	BaseRep
 	Data struct {
 		MtPeisongId string `json:"mt_peisong_id"` //	美团配送内部订单id
-		DeliveryId  string `json:"delivery_id"`   //	配送活动标识
+		DeliveryId  int64  `json:"delivery_id"`   //	配送活动标识
 		OrderId     string `json:"order_id"`      //	外部订单id
 	} `json:"data"`
 }
@@ -57,7 +57,7 @@ type OrderDeleteRsp struct {
 	BaseRep
 	Data struct {
 		MtPeisongId string `json:"mt_peisong_id"` //	美团配送内部订单id
-		DeliveryId  string `json:"delivery_id"`   //	配送活动标识
+		DeliveryId  int64  `json:"delivery_id"`   //	配送活动标识
 		OrderId     string `json:"order_id"`      //	外部订单id
 	} `json:"data"`
 }
@@ -77,7 +77,8 @@ type OrderStatusQuery struct {
 type OrderStatusQueryRsp struct {
 	BaseRep
 	Data struct {
-		DeliveryId     int64  `json:"delivery_id"`      // 是	配送活动标识
+		// 传过来的竟然是string！！！！
+		DeliveryId     string `json:"delivery_id"`      // 是	配送活动标识
 		MtPeisongId    string `json:"mt_peisong_id"`    // 是	美团配送内部订单id，最长不超过32个字符
 		OrderId        string `json:"order_id"`         // 是	外部订单号，最长不超过32个字符
 		Status         int    `json:"status"`           // 是	状态代码，可选值为	0：待调度	20：已接单	30：已取货	50：已送达	99：已取消
@@ -154,10 +155,10 @@ type OrderRiderLocationRsp struct {
 	Data struct {
 		// 接口返回的坐标量级为真实坐标的基础上乘以 10 的 6 次方的整数，例如：骑手真实坐标为（116.255596, 40.029185），则接口返回结果为（116255596, 40029185）；
 		Lat int64  `json:"lat"` // 纬度
-		Lng string `json:"lng"` // 经度
+		Lng int64 `json:"lng"` // 经度
 	} `json:"data"`
 }
 
 func (t *OrderRiderLocation) APIName() string {
-	return "order/check"
+	return "order/rider/location"
 }

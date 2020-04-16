@@ -12,6 +12,9 @@ import (
 	"time"
 )
 
+// true会打印出logs
+const DebugStatus = false
+
 type Client struct {
 	apiDomain string
 	Client    *http.Client
@@ -60,6 +63,10 @@ func (this *Client) doRequest(method string, param Param, result interface{}) (e
 			return err
 		}
 		for k, v := range p {
+			if DebugStatus {
+				println(k)
+				println(v)
+			}
 			DataUrlVal.Add(k, v)
 		}
 	}
@@ -106,7 +113,7 @@ func sign(p map[string]string, appSecret string) string {
 	sort.Strings(keys)
 	var strParam string
 	for _, k := range keys {
-		if k != "sign" {
+		if k != "sign" && p[k] != "" {
 			strParam += k + p[k]
 		}
 	}
