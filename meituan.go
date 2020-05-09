@@ -13,7 +13,7 @@ import (
 )
 
 // true会打印出logs
-const DebugStatus = false
+const DebugStatus = true
 
 type Client struct {
 	apiDomain string
